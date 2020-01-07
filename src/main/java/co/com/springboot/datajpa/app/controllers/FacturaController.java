@@ -35,6 +35,22 @@ public class FacturaController {
 	private IClienteService clienteService;
 	
 	private final Logger log =  LoggerFactory.getLogger(getClass());
+	
+	@RequestMapping(value="/ver/{id}", method=RequestMethod.GET)
+	public String ver(@PathVariable(value="id") Long id,
+			Model model,
+			RedirectAttributes flash) 
+	{
+		Factura factura = clienteService.findFacturaById(id);
+		if(factura==null) 
+		{
+			flash.addFlashAttribute("error", "La factura no existe en la base de datos");
+			return "redirect:/listar";
+		}
+		model.addAttribute("factura", factura);
+		model.addAttribute("titulo", "Factura : ".concat(factura.getDescripcion()));
+		return "factura/ver";
+	}
 
 	@RequestMapping(value="/form/{clienteId}", method=RequestMethod.GET)
 	public String crear(@PathVariable(value="clienteId") Long clienteId, Map<String, Object> model, RedirectAttributes flash ) 
